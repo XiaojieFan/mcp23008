@@ -26,12 +26,17 @@ static uint8_t mcp23008_read_one_byte(mcp23008_device_t dev, uint8_t  reg)
 {
     struct rt_i2c_msg msg[2] = {0};
     rt_uint8_t temp = 0;
+    rt_uint8_t addr = MCP23008_ADDR;
     RT_ASSERT(dev != RT_NULL);
-    msg[0].addr 	= MCP23008_ADDR;
+    if (dev->AddrInput)
+    {
+        addr = dev->AddrInput;
+    }
+    msg[0].addr 	= addr;
     msg[0].flags 	= RT_I2C_WR;
     msg[0].len 		= 1;
     msg[0].buf 		= &reg;
-    msg[1].addr 	= MCP23008_ADDR;
+    msg[1].addr 	= addr;
     msg[1].flags 	= RT_I2C_RD;// will restart
     msg[1].len 		= 1;
     msg[1].buf		= &temp;
@@ -49,8 +54,13 @@ static uint8_t mcp23008_read_one_byte(mcp23008_device_t dev, uint8_t  reg)
 static rt_err_t mcp23008_write_one_byte(mcp23008_device_t dev, uint8_t reg, uint8_t data)
 {
     struct rt_i2c_msg msg[2] = {0};
-
+    rt_uint8_t addr = MCP23008_ADDR;
     RT_ASSERT(dev != RT_NULL);
+    
+    if (dev->AddrInput)
+    {
+        addr = dev->AddrInput;
+    }
     msg[0].addr 	= MCP23008_ADDR;
     msg[0].flags 	= RT_I2C_WR;
     msg[0].len 		= 1;
