@@ -104,7 +104,7 @@ rt_err_t mcp23008_set_pin_pullup_mode(mcp23008_device_t dev, rt_uint8_t pin, uin
     {
         SET_SPEC_BIT(value,pin);
     }
-    mcp23008_write_one_byte(dev,MCP23008_GPPU,value);	    		
+    ret = mcp23008_write_one_byte(dev,MCP23008_GPPU,value);	    		
 
     return ret;
 }
@@ -154,15 +154,16 @@ rt_err_t mcp_config_interrupt(mcp23008_device_t dev,  rt_uint8_t pin, rt_uint8_t
     ret = mcp23008_write_one_byte(dev, MCP23008_GPINTEN, pin);
     if (ret != RT_EOK)
     {
-		LOG_E("write GPINTEN failed .\n");
-		return ret;
+        LOG_E("write GPINTEN failed .\n");
+        return ret;
     }
     ret = mcp23008_write_one_byte(dev, MCP23008_INTCON, pin);
     if (ret != RT_EOK)
     {
-		LOG_E("write INCCON failed .\n");
-		return ret;
-    }				
+        LOG_E("write INCCON failed .\n");
+        return ret;
+    }
+    return ret;
 }
 
 uint8_t mcp23008_port_read(mcp23008_device_t dev)
@@ -224,8 +225,6 @@ mcp23008_device_t mcp23008_init(const char *i2c_bus_name, uint8_t AddrInput)
     }
     dev->AddrInput = AddrInput;
     return dev;		
-
-    return RT_NULL;
 }
 
 void mcp23008_deinit(struct mcp23008_device *dev)
