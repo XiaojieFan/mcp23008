@@ -114,7 +114,7 @@ rt_uint8_t mcp_read_gpio(mcp23008_device_t dev)
 		return mcp23008_read_one_byte(dev, MCP23008_GPIO);
 }
 
-rt_uint8_t mcp_write_gpio(mcp23008_device_t dev, rt_uint8_t value)
+rt_err_t mcp_write_gpio(mcp23008_device_t dev, rt_uint8_t value)
 {
 		return mcp23008_write_one_byte(dev, MCP23008_GPIO, value);
 
