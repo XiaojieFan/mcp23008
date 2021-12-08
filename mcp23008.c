@@ -25,7 +25,7 @@
 static uint8_t mcp23008_read_one_byte(mcp23008_device_t dev, uint8_t  reg)
 {
 		struct rt_i2c_msg msg[2] = {0};
-		rt_uint8_t temp;
+		rt_uint8_t temp = 0;
 		RT_ASSERT(dev != RT_NULL);
 		msg[0].addr 	= MCP23008_ADDR;
 		msg[0].flags 	= RT_I2C_WR;
@@ -37,17 +37,12 @@ static uint8_t mcp23008_read_one_byte(mcp23008_device_t dev, uint8_t  reg)
 		msg[1].buf		= &temp;
 		rt_mutex_take(dev->lock, RT_WAITING_FOREVER);
 
-		if (rt_i2c_transfer(dev->i2c, msg, 2) == 2)
-	  {
-				rt_mutex_release(dev->lock);
-				return RT_EOK;
-		}
-		else
-		{
-				rt_mutex_release(dev->lock);
+		if (rt_i2c_transfer(dev->i2c, msg, 2) != 2)
+	  	{
 				LOG_E("i2c write reg failed.\n");
-				return RT_ERROR;
 		}
+		
+		rt_mutex_release(dev->lock);
 		return temp;
 }
 
